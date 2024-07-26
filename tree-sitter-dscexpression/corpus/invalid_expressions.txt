@@ -1,0 +1,171 @@
+=====
+String literal looking like function
+=====
+functionOne(1,2)
+---
+
+    (statement
+      (stringLiteral))
+
+=====
+String parameter not in quotes
+=====
+[functionOne(alpha, beta)]
+---
+
+    (statement
+      (expression
+        (function
+          (functionName)
+          (ERROR
+            (functionName)
+            (functionName)))))
+
+=====
+Missing parenthesis
+=====
+[functionOne]
+---
+
+    (ERROR
+      (functionName))
+
+=====
+Missing parameter
+=====
+[functionOne(1, ,2)]
+---
+
+    (statement
+      (expression
+        (function
+          (functionName)
+          (arguments
+            (number)
+            (ERROR)
+            (number)))))
+
+=====
+Escaped bracket
+=====
+[[notFunction()]
+---
+
+    (statement
+      (escapedStringLiteral))
+
+=====
+String literal starting with two brackets
+=====
+[[This is a string
+---
+
+    (statement
+      (escapedStringLiteral))
+
+=====
+String literal
+=====
+This is a string
+---
+
+    (statement
+      (stringLiteral))
+
+=====
+String starting with bracket
+=====
+[Test] string
+---
+
+    (statement
+      (bracketInStringLiteral))
+
+=====
+Multiple expressions
+=====
+[functionOne()][functionTwo()]
+---
+
+    (statement
+      (bracketInStringLiteral))
+
+=====
+Whitespace
+=====
+  [  functionOne   ( 'arg'  , 2 )  ]
+---
+
+    (statement
+      (stringLiteral))
+
+=====
+Incomplete expression
+=====
+[functionOne()
+---
+
+    (statement
+      (expression
+        (function
+          (functionName)))
+      (MISSING "]"))
+
+=====
+Invalid float argument
+=====
+[myFunction(a.1)]
+---
+
+    (statement
+      (expression
+        (function
+          (functionName)
+          (ERROR
+            (functionName))
+          (arguments
+            (number)))))
+
+=====
+Plus-sign number argument
+=====
+[myFunction(+1)]
+---
+
+    (statement
+      (expression
+        (function
+          (functionName)
+          (ERROR
+            (UNEXPECTED '+'))
+          (arguments
+            (number)))))
+
+=====
+Float input
+=====
+[myFunction(1234.5678)]
+---
+
+    (statement
+      (expression
+        (function
+          (functionName)
+          (ERROR
+            (number))
+          (arguments
+              (number)))))
+
+=====
+Float input starting with decimal
+=====
+[myFunction(.1)]
+---
+
+    (statement
+      (expression
+        (function
+          (functionName)
+          (ERROR)
+          (arguments
+              (number)))))

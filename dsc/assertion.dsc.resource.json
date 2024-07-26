@@ -1,0 +1,66 @@
+{
+  "$schema": "https://raw.githubusercontent.com/PowerShell/DSC/main/schemas/2024/04/bundled/resource/manifest.json",
+  "type": "Microsoft.DSC/Assertion",
+  "version": "0.1.0",
+  "description": "`test` will be invoked for all resources in the supplied configuration.",
+  "kind": "Group",
+  "get": {
+    "executable": "dsc",
+    "args": [
+      "config",
+      "--as-group",
+      "test",
+      "--as-get"
+    ],
+    "input": "stdin"
+  },
+  "set": {
+    "executable": "dsc",
+    "args": [
+      "config",
+      "--as-group",
+      "test"
+    ],
+    "input": "stdin",
+    "implementsPretest": true,
+    "return": "state"
+  },
+  "test": {
+    "executable": "dsc",
+    "args": [
+      "config",
+      "--as-group",
+      "test",
+      "--as-get"
+    ],
+    "input": "stdin",
+    "return": "state"
+  },
+  "exitCodes": {
+    "0": "Success",
+    "1": "Invalid argument",
+    "2": "Resource error",
+    "3": "JSON Serialization error",
+    "4": "Invalid input format",
+    "5": "Resource instance failed schema validation",
+    "6": "Command cancelled"
+  },
+  "schema": {
+    "command": {
+      "executable": "dsc",
+      "args": [
+        "schema",
+        "--type",
+        "configuration"
+      ]
+    }
+  },
+  "validate": {
+    "executable": "dsc",
+    "args": [
+      "config",
+      "validate"
+    ],
+    "input": "stdin"
+  }
+}

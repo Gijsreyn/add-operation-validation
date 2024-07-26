@@ -1,0 +1,533 @@
+# yaml-language-server: $schema=https://json-schema.org/draft/2020-12/schema
+$schema: https://json-schema.org/draft/2020-12/schema
+$id:     <HOST>/<PREFIX>/<VERSION>/resource/manifest.yaml
+
+title: Command-based DSC Resource Manifest
+description: >-
+  Defines the information DSC and integrating require to process and call a command-based DSC
+  Resource.
+markdownDescription: | # VS Code only
+  ***
+  [_Online Documentation_][01]
+  ***
+
+  Defines the information DSC and integrating require to process and call a command-based DSC
+  Resource. For DSC to use a manifest on a system, the manifest file must:
+
+  1. Be discoverable in the `PATH` environment variable.
+  1. Follow the naming convention `<name>.dsc.resource.json`.
+  1. Be valid for this schema.
+
+  [01]: <DOCS_BASE_URL>/reference/schemas/resource/manifest/root?<DOCS_VERSION_PIN>
+
+defaultSnippets:
+  - label: ' Define a resource'
+    markdownDescription: |-
+      Defines a standard resource that:
+
+      - Can get the current state of an instance
+      - Can set an instance to the desired state
+      - Relies on DSC's synthetic testing to determine whether an instance is in the desired state
+      - Defines an embedded JSON schema.
+    body:
+      ${escape_dollar:$}schema: <HOST>/<PREFIX>/<VERSION>/bundled/resource/manifest.yaml
+      type:                     '${1:owner.area.group}/${2:${TM_FILENAME_BASE/^(.*?)[\.]dsc[\.]resource/$1/}}'
+      version:                  '${3:0.1.0}'
+      description:               ${4:Synopsis for the resource's purpose}
+      get:
+        executable:   ${5:executable name}
+        args:       ['${6:argument}']
+        input:        ${7:stdin}
+      set:
+        executable:         ${8:executable name}
+        args:             ['${9:argument}']
+        input:              ${10:stdin}
+        implementsPretest: ^${11:false}
+        return:             ${12:state}
+      schema:
+        embedded:
+          ${escape_dollar:$}schema: ${13|https://json-schema.org/draft/2020-12/schema,https://json-schema.org/draft/2019-09/schema,http://json-schema.org/draft-07/schema#|}
+          type:                     object
+          properties:
+            ${14:name}:
+              title:       ${15:property title}
+              description: ${16:explanation of property purpose and usage}
+              type:        ${17|string,integer,number,array,object,null|}
+
+  - label: ' Define a resource (group)'
+    markdownDescription: |-
+      Defines a group resource that expects a list of resource instances and operates on them.
+    body:
+      ${escape_dollar:$}schema: <HOST>/<PREFIX>/<VERSION>/bundled/resource/manifest.yaml
+      type:                     '${1:owner.area.group}/${2:${TM_FILENAME_BASE/^(.*?)[\.]dsc[\.]resource/$1/}}'
+      version:                  '${3:0.1.0}'
+      description:               ${4:Synopsis for the resource's purpose}
+      get:
+        executable:   ${5:executable name}
+        args:       ['${6:argument}']
+        input:        ${7:stdin}
+      test:
+        executable:   ${8:executable name}
+        args:       ['${9:argument}']
+        input:        ${10:stdin}
+        return:       ${12:state}
+      set:
+        executable:         ${13:executable name}
+        args:             ['${14:argument}']
+        input:              ${15:stdin}
+        implementsPretest: ^${16:false}
+        return:             ${17:state}
+      schema:
+        embedded:
+          ${escape_dollar:$}schema: ${18|https://json-schema.org/draft/2020-12/schema,https://json-schema.org/draft/2019-09/schema,http://json-schema.org/draft-07/schema#|}
+          type:                     object
+          properties:
+            resources:
+              title:       ${19:Resources}
+              description: ${20:Defines a list of resource instances to process}
+              type:        array
+              items:
+                ${escape_dollar:$}ref: <HOST>/<PREFIX>/<VERSION>/config/document.resource.json
+            ${21:name}:
+              title:       ${22:property title}
+              description: ${23:explanation of property purpose and usage}
+              type:        ${24|string,integer,number,array,object,null|}
+
+  - label: ' Define a resource (adapter)'
+    markdownDescription: |-
+      Defines an adapter resource that enables users to define non-command-based DSC Resources in
+      the configuration.
+    body:
+      ${escape_dollar:$}schema: <HOST>/<PREFIX>/<VERSION>/bundled/resource/manifest.yaml
+      type:                     '${1:owner.area.group}/${2:${TM_FILENAME_BASE/^(.*?)[\.]dsc[\.]resource/$1/}}'
+      version:                  '${3:0.1.0}'
+      description:               ${4:Synopsis for the resource's purpose}
+      get:
+        executable:   ${5:executable name}
+        args:       ['${6:argument}']
+        input:        ${7:stdin}
+      test:
+        executable:   ${8:executable name}
+        args:       ['${9:argument}']
+        input:        ${10:stdin}
+        return:       ${12:state}
+      set:
+        executable:         ${13:executable name}
+        args:             ['${14:argument}']
+        input:              ${15:stdin}
+        implementsPretest: ^${16:false}
+        return:             ${17:state}
+      adapter:
+        config: ${18|full,sequence|}
+        list:
+          executable:   ${19:executable name}
+          args:       ['${20:argument}']
+      schema:
+        embedded:
+          ${escape_dollar:$}schema: ${23|https://json-schema.org/draft/2020-12/schema,https://json-schema.org/draft/2019-09/schema,http://json-schema.org/draft-07/schema#|}
+          type:                     object
+          properties:
+            resources:
+              title:       ${24:Resources}
+              description: ${25:Defines a list of resource instances to process}
+              type:        array
+              items:
+                ${escape_dollar:$}ref: <HOST>/<PREFIX>/<VERSION>/config/document.resource.json
+            ${26:name}:
+              title:       ${27:property title}
+              description: ${28:explanation of property purpose and usage}
+              type:        ${29|string,integer,number,array,object,null|}
+
+  - label: ' Define a resource (importer)'
+    markdownDescription: |-
+      Defines an importer resource that can resolve an external source to nested resource
+      instances.
+    body:
+      ${escape_dollar:$}schema: <HOST>/<PREFIX>/<VERSION>/bundled/resource/manifest.yaml
+      type:                     '${1:owner.area.group}/${2:${TM_FILENAME_BASE/^(.*?)[\.]dsc[\.]resource/$1/}}'
+      kind:                      Import
+      version:                  '${3:0.1.0}'
+      description:               ${4:Synopsis for the resource's purpose}
+      resolve:
+        executable:   ${5:executable name}
+        args:       ['${6:argument}']
+        input:        ${7:stdin}
+      schema:
+        embedded:
+          ${escape_dollar:$}schema: ${13|https://json-schema.org/draft/2020-12/schema,https://json-schema.org/draft/2019-09/schema,http://json-schema.org/draft-07/schema#|}
+          type:                     object
+          properties:
+            ${14:name}:
+              title:       ${15:property title}
+              description: ${16:explanation of property purpose and usage}
+              type:        ${17|string,integer,number,array,object,null|}
+
+  - label: ' Define a resource (assertion-only)'
+    markdownDescription: |-
+      Defines an assertion resource that can get the current state of an instance but not configure
+      it. By default, the resource relies on DSC's synthetic testing feature. If the resource
+      implements the `test` operation itself, define the `test` property.
+    body:
+      ${escape_dollar:$}schema: <HOST>/<PREFIX>/<VERSION>/bundled/resource/manifest.yaml
+      type:                     '${1:owner.area.group}/${2:${TM_FILENAME_BASE/^(.*?)[\.]dsc[\.]resource/$1/}}'
+      version:                  '${3:0.1.0}'
+      description:               ${4:Synopsis for the resource's purpose}
+      get:
+        executable:   ${5:executable name}
+        args:       ['${6:argument}']
+        input:        ${7:stdin}
+      schema:
+        embedded:
+          ${escape_dollar:$}schema: ${13|https://json-schema.org/draft/2020-12/schema,https://json-schema.org/draft/2019-09/schema,http://json-schema.org/draft-07/schema#|}
+          type:                     object
+          properties:
+            ${14:name}:
+              title:       ${15:property title}
+              description: ${16:explanation of property purpose and usage}
+              type:        ${17|string,integer,number,array,object,null|}
+
+type: object
+required:
+  - $schema
+  - type
+  - version
+properties:
+  $schema:
+    title: Manifest Schema
+    description: >-
+      This property must be the canonical URL of the Command-based DSC Resource Manifest schema
+      that the manifest is implemented for.
+    type:   string
+    format: uri
+    enum:
+      - <HOST>/<PREFIX>/<VERSION>/resource/manifest.yaml
+      - <HOST>/<PREFIX>/<VERSION>/bundled/resource/manifest.yaml
+      - <HOST>/<PREFIX>/<VERSION>/bundled/resource/manifest.vscode.yaml
+      - <HOST>/<PREFIX>/2023/10/resource/manifest.yaml
+      - <HOST>/<PREFIX>/2023/10/bundled/resource/manifest.yaml
+      - <HOST>/<PREFIX>/2023/10/bundled/resource/manifest.vscode.yaml
+      - <HOST>/<PREFIX>/2023/08/resource/manifest.yaml
+      - <HOST>/<PREFIX>/2023/08/bundled/resource/manifest.yaml
+      - <HOST>/<PREFIX>/2023/08/bundled/resource/manifest.vscode.yaml
+    # VS Code Only
+    markdownDescription: |
+      ***
+      [_Online Documentation_][01]
+      ***
+
+      This property must be one of the canonical URLs for the version of the Command-based DSC
+      Resource Manifest schema that the manifest is implemented for.
+      
+      For every version of the schema, there are three valid urls:
+
+      ```yaml
+      .../resource/manifest.json
+      ```
+      
+      > The URL to the canonical non-bundled schema. When it's used for validation, the validating
+      > client needs to retrieve this schema and every schema it references.
+
+      ```yaml
+      .../bundled/resource/manifest.json
+      ```
+      
+      > The URL to the bundled schema. When it's used for validation, the validating client only
+      > needs to retrieve this schema.
+      > 
+      > This schema uses the bundling model introduced for JSON Schema 2020-12. While DSC can
+      > still validate the document when it uses this schema, other tools may error or behave
+      > in unexpected ways.
+
+      ```yaml
+      .../bundled/resource/manifest.vscode.json
+      ```
+      
+      > The URL to the enhanced authoring schema. This schema is much larger than the other
+      > schemas, as it includes additional definitions that provide contextual help and snippets
+      > that the others don't include.
+      > 
+      > This schema uses keywords that are only recognized by VS Code. While DSC can still
+      > validate the document when it uses this schema, other tools may error or behave in
+      > unexpected ways.
+
+      [01]: <DOCS_BASE_URL>/reference/schemas/resource/manifest/root?<DOCS_VERSION_PIN>#schema
+    markdownEnumDescriptions:
+      - | # <HOST>/<PREFIX>/<VERSION>/resource/manifest.yaml
+          <!-- force a line break -->
+
+          > #### `<VERSION>` non-bundled
+          >
+          > Indicates that the resource manifest adheres to the `<VERSION>` schema. This URL
+          > points to the canonical non-bundled schema. When it's used for validation, the
+          > validating client needs to retrieve this schema and every schema it references.
+      - | # <HOST>/<PREFIX>/<VERSION>/bundled/resource/manifest.yaml
+          <!-- force a line break -->
+
+          > #### `<VERSION>` bundled
+          >
+          > Indicates that the resource manifest adheres to the `<VERSION>` schema. This URL
+          > points to the bundled schema. When it's used for validation, the validating client
+          > only needs to retrieve this schema.
+          >
+          > This schema uses the bundling model introduced for JSON Schema 2020-12. While DSC can
+          > still validate the document when it uses this schema, other tools may error or behave
+          > in unexpected ways.
+      - | # <HOST>/<PREFIX>/<VERSION>/bundled/resource/manifest.vscode.yaml
+          <!-- force a line break -->
+
+          > #### `<VERSION>` enhanced authoring
+          >
+          > Indicates that the resource manifest adheres to the `<VERSION>` schema. This URL
+          > points to the enhanced authoring schema. This schema is much larger than the other
+          > schemas, as it includes additional definitions that provide contextual help and
+          > snippets that the others don't include.
+          >
+          > This schema uses keywords that are only recognized by VS Code. While DSC can still
+          > validate the document when it uses this schema, other tools may error or behave in
+          > unexpected ways.
+
+      - | # <HOST>/<PREFIX>/2023/10/resource/manifest.yaml
+          <!-- force a line break -->
+
+          > #### `2023/10` non-bundled
+          >
+          > Indicates that the resource manifest adheres to the `2023/10` schema. This version
+          > is deprecated, and should only be used for compatibility with `alpha.5` and earlier.
+          > Migrate to using the `<VERSION>` of the schema 
+          >
+          > This URL points to the canonical non-bundled schema. When it's used for validation, the
+          > validating client needs to retrieve this schema and every schema it references.
+
+      - | # <HOST>/<PREFIX>/2023/10/bundled/resource/manifest.yaml
+          <!-- force a line break -->
+
+          > #### `2023/10` bundled
+          >
+          >Indicates that the resource manifest adheres to the `2023/10` schema. This version
+          > is deprecated, and should only be used for compatibility with `alpha.5` and earlier.
+          > Migrate to using the `<VERSION>` of the schema.
+          >
+          > This URL points to the bundled schema. When it's used for validation, the validating
+          > client only needs to retrieve this schema.
+          >
+          > This schema uses the bundling model introduced for JSON Schema 2020-12. While DSC can
+          > still validate the document when it uses this schema, other tools may error or behave
+          > in unexpected ways.
+      - | # <HOST>/<PREFIX>/2023/10/bundled/resource/manifest.vscode.yaml
+          <!-- force a line break -->
+
+          > #### `2023/10` enhanced authoring
+          >
+          >Indicates that the resource manifest adheres to the `2023/10` schema. This version
+          > is deprecated, and should only be used for compatibility with `alpha.5` and earlier.
+          > Migrate to using the `<VERSION>` of the schema.
+          >
+          > This URL points to the enhanced authoring schema. This schema is much larger than the
+          > other schemas, as it includes additional definitions that provide contextual help and
+          > snippets that the others don't include.
+          >
+          > This schema uses keywords that are only recognized by VS Code. While DSC can still
+          > validate the document when it uses this schema, other tools may error or behave in
+          > unexpected ways.
+      - | # <HOST>/<PREFIX>/2023/08/resource/manifest.yaml
+          <!-- force a line break -->
+
+          > #### `2023/08` non-bundled
+          >
+          > Indicates that the resource manifest adheres to the `2023/08` schema. This version
+          > is deprecated, and should only be used for compatibility with `alpha.3` and earlier.
+          > Migrate to using the `<VERSION>` of the schema 
+          >
+          > This URL points to the canonical non-bundled schema. When it's used for validation, the
+          > validating client needs to retrieve this schema and every schema it references.
+
+      - | # <HOST>/<PREFIX>/2023/08/bundled/resource/manifest.yaml
+          <!-- force a line break -->
+
+          > #### `2023/08` bundled
+          >
+          > Indicates that the resource manifest adheres to the `2023/08` schema. This version
+          > is deprecated, and should only be used for compatibility with `alpha.3` and earlier.
+          > Migrate to using the `<VERSION>` of the schema 
+          >
+          > This URL points to the bundled schema. When it's used for validation, the validating
+          > client only needs to retrieve this schema.
+          >
+          > This schema uses the bundling model introduced for JSON Schema 2020-12. While DSC can
+          > still validate the document when it uses this schema, other tools may error or behave
+          > in unexpected ways.
+      - | # <HOST>/<PREFIX>/2023/08/bundled/resource/manifest.vscode.yaml
+          <!-- force a line break -->
+
+          > #### `2023/08` enhanced authoring
+          >
+          > Indicates that the resource manifest adheres to the `2023/08` schema. This version
+          > is deprecated, and should only be used for compatibility with `alpha.3` and earlier.
+          > Migrate to using the `<VERSION>` of the schema 
+          >
+          > This URL points to the enhanced authoring schema. This schema is much larger than the
+          > other schemas, as it includes additional definitions that provide contextual help and
+          > snippets that the others don't include.
+          >
+          > This schema uses keywords that are only recognized by VS Code. While DSC can still
+          > validate the document when it uses this schema, other tools may error or behave in
+          > unexpected ways.
+  type:
+    $ref: /<PREFIX>/<VERSION>/definitions/resourceType.yaml
+  version:
+    title: Resource Semantic Version
+    description: >-
+      The semantic version (semver) of the DSC Resource. This version identifies the DSC Resource,
+      not the version of the application it manages.
+    $ref: /<PREFIX>/<VERSION>/definitions/semver.yaml
+    markdownDescription: | # VS Code only
+      ***
+      [_Online Documentation_][01]
+      ***
+
+      The semantic version ([semver][02]) of the DSC Resource. This version identifies the DSC
+      Resource, not the version of the application it manages.
+
+      This value uses the [suggested regular expression][03] to validate whether the string is valid
+      semver. This is the same pattern, made multi-line for easier readability:
+
+      ```regex
+      ^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)
+      (?:-(
+        (?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)
+        (?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))
+      *))?
+      (?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$
+      ```
+
+      The first line matches the `major.minor.patch` components of the version. The middle lines match
+      the pre-release components. The last line matches the build metadata component.
+
+      [01]: <DOCS_BASE_URL>/reference/schemas/resource/manifest/root?<DOCS_VERSION_PIN>#version
+      [02]: https://semver.org/
+      [03]: https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string
+  description:
+    title: Resource Description
+    description: >-
+      A short synopsis of the DSC Resource's purpose.
+    type: string
+    markdownDescription: | # VS Code only
+      ***
+      [_Online Documentation_][01]
+      ***
+
+      Defines a short synopsis of the DSC Resource's purpose.
+
+      [01]: <DOCS_BASE_URL>/reference/schemas/resource/manifest/root?<DOCS_VERSION_PIN>#description-1
+  kind:
+    $ref: /<PREFIX>/<VERSION>/definitions/resourceKind.yaml
+  tags:
+    title: Tags
+    description: >-
+      Defines a list of searchable terms for the resource.
+    markdownDescription: | # VS Code only
+      ***
+      [_Online Documentation_][01]
+      ***
+
+      Defines a list of searchable terms for the resource.
+
+      [01]: <DOCS_BASE_URL>/reference/schemas/resource/manifest/root?<DOCS_VERSION_PIN>#tags
+    type: array
+    uniqueItems: true
+    items:
+      type: string
+      pattern: ^\w+$
+      patternErrorMessage: | # VS Code only
+        Invalid tag. Tags must be a string of alphanumeric characters and underscores. No other
+        characters are permitted.
+  get:
+    $ref: /<PREFIX>/<VERSION>/resource/manifest.get.yaml
+  set:
+    $ref: /<PREFIX>/<VERSION>/resource/manifest.set.yaml
+  whatIf:
+    $ref: /<PREFIX>/<VERSION>/resource/manifest.whatIf.yaml
+  test:
+    $ref: /<PREFIX>/<VERSION>/resource/manifest.test.yaml
+  delete:
+    $ref: /<PREFIX>/<VERSION>/resource/manifest.delete.yaml
+  export:
+    $ref: /<PREFIX>/<VERSION>/resource/manifest.export.yaml
+  validate:
+    $ref: /<PREFIX>/<VERSION>/resource/manifest.validate.yaml
+  resolve:
+    $ref: /<PREFIX>/<VERSION>/resource/manifest.resolve.yaml
+  adapter:
+    $ref: /<PREFIX>/<VERSION>/resource/manifest.adapter.yaml
+  exitCodes:
+    # This setting in the root of the schema implies exit codes must have the
+    # same meaning across all executions. What about implementations that
+    # support multiple executables? Should exitCodes be a key that exists on
+    # command/method objects too?
+    title: Exit Codes
+    description: >-
+      This property defines a map of valid exit codes for the DSC Resource. DSC always interprets
+      exit code `0` as a successful operation and any other exit code as an error. Use this
+      property to indicate human-readable semantic meanings for the DSC Resource's exit codes.
+    type: object
+    propertyNames:
+      pattern: "^-?[0-9]+$"
+      patternErrorMessage: |
+        Invalid exit code. Must be a string representing a 32-bit signed integer.
+    patternProperties:
+      "^-?[0-9]+$":
+        type: string
+    unevaluatedProperties: false
+    default:
+      '0': Success
+      '1': Error
+    examples:
+      - '0': Success
+        '1': Invalid parameter
+        '2': Invalid input
+        '3': Registry error
+        '4': JSON serialization failed
+    # VS Code only
+    markdownDescription: |
+      ***
+      [_Online Documentation_][01]
+      ***
+
+      This property defines a map of valid exit codes for the DSC Resource. DSC always interprets
+      exit code `0` as a successful operation and any other exit code as an error. Use this
+      property to indicate human-readable semantic meanings for the DSC Resource's exit codes.
+
+      Define the keys in this property as strings representing a valid 32-bit signed integer. You
+      can't use alternate formats for the exit code. For example, instead of the hexadecimal value
+      `0x80070005` for "Access denied", specify the exit code as `-2147024891`. If you're authoring
+      your resource manifest in yaml, be sure to wrap the exit code in single quotes, like
+      `'0': Success` instead of `0: Success` to ensure the YAML file can be parsed correctly.
+
+      Define the value for each key as a string explaining what the exit code indicates.
+
+      [01]: <DOCS_BASE_URL>/reference/schemas/resource/manifest/root?<DOCS_VERSION_PIN>#exitcodes
+    defaultSnippets:
+      - label:     ' Defined exit codes'
+        description: Defines exit codes with semantic meaning for the resource.
+        body:
+          '0': Success
+          ${1:first exit code number}:  ${2:first exit code meaning}
+          ${3:second exit code number}: ${4:second exit code meaning}
+  schema:
+    $ref: /<PREFIX>/<VERSION>/resource/manifest.schema.yaml
+
+allOf:
+  # Adapter resources must define the adapter command
+  - if:
+      properties: { kind: { const: Adapter } }
+      required: [kind]
+    then:
+      required: [adapter]
+  # Importer resources must define resolve, all others must define get
+  - if:
+      properties: { kind: { const: Import } }
+      required: [kind]
+    then:
+      required: [resolve]
+    else:
+      required: [get]

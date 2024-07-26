@@ -1,0 +1,54 @@
+{
+  "$schema": "https://raw.githubusercontent.com/PowerShell/DSC/main/schemas/2024/04/bundled/resource/manifest.json",
+  "type": "Microsoft.DSC/Group",
+  "version": "0.1.0",
+  "description": "All resources in the supplied configuration is treated as a group.",
+  "kind": "Group",
+  "get": {
+    "executable": "dsc",
+    "args": [
+      "config",
+      "--as-group",
+      "get"
+    ],
+    "input": "stdin"
+  },
+  "set": {
+    "executable": "dsc",
+    "args": [
+      "config",
+      "--as-group",
+      "set"
+    ],
+    "input": "stdin",
+    "implementsPretest": true,
+    "return": "state"
+  },
+  "test": {
+    "executable": "dsc",
+    "args": [
+      "config",
+      "--as-group",
+      "test"
+    ],
+    "input": "stdin",
+    "return": "state"
+  },
+  "exitCodes": {
+    "0": "Success",
+    "1": "Invalid argument",
+    "2": "Resource error",
+    "3": "JSON Serialization error",
+    "4": "Invalid input format",
+    "5": "Resource instance failed schema validation",
+    "6": "Command cancelled"
+  },
+  "validate": {
+    "executable": "dsc",
+    "args": [
+      "config",
+      "validate"
+    ],
+    "input": "stdin"
+  }
+}

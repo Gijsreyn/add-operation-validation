@@ -1,0 +1,12 @@
+{
+    "$schema": "https://raw.githubusercontent.com/PowerShell/DSC/main/schemas/2024/04/config/document.json",
+    "resources": [
+      {
+        "name": "os",
+        "type": "Microsoft/OSInfo",
+        "properties": {
+            "family": "Windows"
+        }
+      }
+    ]
+  }

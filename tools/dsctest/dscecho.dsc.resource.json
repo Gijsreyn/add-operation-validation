@@ -1,0 +1,45 @@
+{
+    "$schema": "https://raw.githubusercontent.com/PowerShell/DSC/main/schemas/2024/04/bundled/resource/manifest.json",
+    "type": "Test/Echo",
+    "version": "0.1.0",
+    "get": {
+        "executable": "dsctest",
+        "args": [
+            "echo",
+            {
+                "jsonInputArg": "--input",
+                "mandatory": true
+            }
+        ]
+    },
+    "set": {
+        "executable": "dsctest",
+        "args": [
+            "echo",
+            {
+                "jsonInputArg": "--input",
+                "mandatory": true
+            }
+        ]
+    },
+    "test": {
+        "executable": "dsctest",
+        "args": [
+            "echo",
+            {
+                "jsonInputArg": "--input",
+                "mandatory": true
+            }
+        ]
+    },
+    "schema": {
+        "command": {
+            "executable": "dsctest",
+            "args": [
+                "schema",
+                "-s",
+                "echo"
+            ]
+        }
+    }
+}

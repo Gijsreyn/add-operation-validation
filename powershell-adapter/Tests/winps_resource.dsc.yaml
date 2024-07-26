@@ -1,0 +1,14 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT License.
+
+$schema: https://raw.githubusercontent.com/PowerShell/DSC/main/schemas/2024/04/config/document.json
+resources:
+- name: Get info from classic DSC resources
+  type: Microsoft.Windows/WindowsPowerShell
+  properties:
+    resources:
+    - name: File
+      type: PSDesiredStateConfiguration/File
+      properties:
+        DestinationPath: c:\test.txt
+        Contents: 'Hello, World!'
